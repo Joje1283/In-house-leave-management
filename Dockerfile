@@ -28,8 +28,8 @@ COPY . /code
 
 EXPOSE 8000
 # RUN poetry run django test
-RUN poetry run ./manage.py test --settings=shop_django.settings.dev
-CMD ["gunicorn", "shop_django.asgi:application", "--bind", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker"]
+RUN poetry run ./manage.py test --settings=leave_management.settings.dev
+CMD ["gunicorn", "leave_management.asgi:application", "--bind", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker"]
 
 # Usage
 ## Build Dockerfile for production
