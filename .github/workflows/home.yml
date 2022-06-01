@@ -38,6 +38,6 @@ jobs:
             -e STATIC_ROOT="${{ secrets.STATIC_ROOT }}" \
             -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" leave_api
           cd ~/Projects/In-house-leave-management
-          git pull
           git checkout main
+          git pull
           /home/paul/.pyenv/shims/python manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
