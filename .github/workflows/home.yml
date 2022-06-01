@@ -1,0 +1,43 @@
+# 정적 파일이 위치하는 서버에 backports-zoneinfo 패키지를 추가로 설치한다 -> poetry add --no-dev backports-zoneinfo
+# 미 설치시 collectstatic 명령이 안된다.
+
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: | 
+        docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }} 
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master  # docs: https://github.com/marketplace/actions/ssh-remote-commands?version=v0.1.4
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        port: ${{ secrets.SERVER_PORT }}
+        envs: GITHUB_SHA
+        script: |
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7} leave_api
+          docker stop server 
+          docker run -d --rm --name server -p 8000:8000 \
+            -e DJANGO_SETTINGS_MODULE=leave_management.settings.prod \
+            -e DB_USER="${{ secrets.DB_USER }}" \
+            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            -e DB_HOST="${{ secrets.DB_HOST }}" \
+            -e DB_PORT="${{ secrets.DB_PORT }}" \
+            -e STATIC_ROOT="${{ secrets.STATIC_ROOT }}" \
+            -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" leave_api
+          cd ~/Projects/In-house-leave-management
+          git pull
+          git checkout main
+          /home/paul/.pyenv/shims/python manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
