@@ -5,7 +5,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ 프로젝트구조_수정 ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -39,5 +39,5 @@ jobs:
             -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" leave_api
           cd ~/Projects/In-house-leave-management
           git pull
-          git checkout 프로젝트구조_수정
+          git checkout main
           /home/paul/.pyenv/shims/python manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
