@@ -15,8 +15,8 @@ jobs:
     - name: Build the Docker image
       run: | 
         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }} 
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/shop:${GITHUB_SHA::7}
-        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/shop:${GITHUB_SHA::7}
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master  # docs: https://github.com/marketplace/actions/ssh-remote-commands?version=v0.1.4
       with:
@@ -26,17 +26,17 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         envs: GITHUB_SHA
         script: |
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/shop:${GITHUB_SHA::7}
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/shop:${GITHUB_SHA::7} shop_api
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
+          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7} leave_api
           docker stop server 
           docker run -d --rm --name server -p 8000:8000 \
-            -e DJANGO_SETTINGS_MODULE=shop_django.settings.prod \
+            -e DJANGO_SETTINGS_MODULE=leave_management.settings.prod \
             -e DB_USER="${{ secrets.DB_USER }}" \
             -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
             -e DB_HOST="${{ secrets.DB_HOST }}" \
             -e DB_PORT="${{ secrets.DB_PORT }}" \
             -e STATIC_ROOT="${{ secrets.STATIC_ROOT }}" \
-            -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" shop_api
+            -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" leave_api
           cd ~/Projects/In-house-leave-management
           git pull
           /home/paul/.pyenv/shims/python manage.py collectstatic --settings=shop_django.settings.collectstatic --no-input
