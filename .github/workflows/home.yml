@@ -37,6 +37,6 @@ jobs:
             -e DB_PORT="${{ secrets.DB_PORT }}" \
             -e STATIC_ROOT="${{ secrets.STATIC_ROOT }}" \
             -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" shop_api
-          cd ~/Projects/shop_api_django
+          cd ~/Projects/In-house-leave-management
           git pull
           /home/paul/.pyenv/shims/python manage.py collectstatic --settings=shop_django.settings.collectstatic --no-input
