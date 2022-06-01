@@ -33,5 +33,5 @@ CMD ["gunicorn", "leave_management.asgi:application", "--bind", "0.0.0.0:8000", 
 
 # Usage
 ## Build Dockerfile for production
-# docker build -t shop_api --build-arg YOUR_ENV=production .
-# docker run --rm --publish 8000:8000 -e SECRET_KEY={{ DJANGO_SECRET_KEY }} shop_api
+# docker build -t leave_api --build-arg YOUR_ENV=production .
+# docker run --rm --publish 8000:8000 -e SECRET_KEY={{ DJANGO_SECRET_KEY }} leave_api

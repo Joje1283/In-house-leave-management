@@ -39,4 +39,4 @@ jobs:
             -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" leave_api
           cd ~/Projects/In-house-leave-management
           git pull
-          /home/paul/.pyenv/shims/python manage.py collectstatic --settings=shop_django.settings.collectstatic --no-input
+          /home/paul/.pyenv/shims/python manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
