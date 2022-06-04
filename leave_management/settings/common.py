@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'grants',
     "leaves",
     "orders",
+    "signs",
 ]
 
 MIDDLEWARE = [
