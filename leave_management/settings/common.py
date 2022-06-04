@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'members',
     'grants',
     "leaves",
+    "orders",
 ]
 
 MIDDLEWARE = [
