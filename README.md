@@ -39,8 +39,25 @@
 - 휴가 삭제
 
 # 도메인 모델 설계
-![image](https://user-images.githubusercontent.com/23291627/171405410-eac75d9a-83f8-4138-bda4-c3b47a515516.png)
-
+<img width="761" alt="image" src="https://user-images.githubusercontent.com/23291627/171995959-8a29873e-f7ad-42f1-a678-20d64655944d.png">
 
 # 엔티티 설계
-![image](https://user-images.githubusercontent.com/23291627/171405440-cdce8488-aad5-42c4-8dc0-e319c9ac27dc.png)
+<img width="1184" alt="image" src="https://user-images.githubusercontent.com/23291627/171995886-8717e63a-15e6-48fb-a4f3-fced98e6e8ad.png">
+
+# URL 설계
+```
+"""
+url
+휴가 승인: /members/1/signs/5/confirm
+휴가 반려: /members/1/signs/5/reject
+
+휴가 신청: /members/1/orders/new
+휴가 조회: /members/1/orders/
+
+휴가 부여 /grants/new
+
+휴가 생성 /leaves/new
+"""
+```
+
+
