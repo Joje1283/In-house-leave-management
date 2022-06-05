@@ -40,10 +40,12 @@
 - 남은 휴가 확인
 
 # 도메인 모델 설계
-<img width="761" alt="image" src="https://user-images.githubusercontent.com/23291627/171995959-8a29873e-f7ad-42f1-a678-20d64655944d.png">
+<img width="572" alt="image" src="https://user-images.githubusercontent.com/23291627/172041701-46d2198e-8113-4c75-bdd8-860db97a44b4.png">
+
 
 # 엔티티 설계
-<img width="1184" alt="image" src="https://user-images.githubusercontent.com/23291627/171995886-8717e63a-15e6-48fb-a4f3-fced98e6e8ad.png">
+<img width="893" alt="image" src="https://user-images.githubusercontent.com/23291627/172041723-2dbf88a0-d88d-4694-a843-cfe1ed25dee2.png">
+
 
 # URL 설계
 ```
