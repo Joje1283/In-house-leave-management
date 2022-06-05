@@ -28,7 +28,7 @@ COPY . /code
 
 EXPOSE 8000
 # RUN poetry run django test
-RUN poetry run ./manage.py test --settings=leave_management.settings.dev
+RUN poetry run ./manage.py test --settings=leave_management.settings.dev --parallel 4
 CMD ["gunicorn", "leave_management.asgi:application", "--bind", "0.0.0.0:8000", "-k", "uvicorn.workers.UvicornWorker"]
 
 # Usage
