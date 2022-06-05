@@ -14,3 +14,11 @@ class Sign(models.Model):
 
     def __str__(self):
         return f"{self.approver} - {self.sign_type}"
+
+    def confirm(self):
+        self.sign_type = self.SignType.CONFIRM
+        self.save()
+
+    def reject(self):
+        self.sign_type = self.SignType.REJECT
+        self.save()
