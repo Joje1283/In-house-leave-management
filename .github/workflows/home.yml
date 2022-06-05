@@ -5,7 +5,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feature/웹_계층_개발 ]
 
 jobs:
   build:
