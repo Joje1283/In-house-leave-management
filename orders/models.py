@@ -55,11 +55,8 @@ class OrderManager(models.Manager):
         order = self.get(pk=order_id)
         if order.start_date < timezone.now().date():
             raise StartedLeaveCancelImpossible("지난 휴가는 취소할 수 없습니다.")
-        order_sign = order.ordersign
-        sign = order.ordersign.sign
-        order.delete()
-        order_sign.delete()
-        sign.delete()
+        order.canceled = True
+        order.save()
 
     @staticmethod
     def validate_out_of_leave_stock(drafter_name, consume):
@@ -75,6 +72,7 @@ class Order(models.Model):
     is_all_day = models.BooleanField(verbose_name="연차 여부",
                                      default=True)  # 연차 Or 연차 아닌지 여부 저장. 연차일 경우 소진일이 start_date, end_date와 함께 계산 필요
     consume = models.FloatField(default=1)
+    canceled = models.BooleanField(default=False)
 
     objects = OrderManager()
 

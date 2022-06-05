@@ -72,15 +72,16 @@ class TestOrder(TestCase):
         self.assertEqual(Order.objects.count(), 1)
         self.assertEqual(Sign.objects.count(), 1)
         self.assertEqual(OrderSign.objects.count(), 1)
+        order = Order.objects.get(pk=order_id)
+        self.assertFalse(order.canceled)
 
         # when
         Order.objects.cancel(order_id)
 
         # then
         # order, sign, ordersign의 레코드가 삭제되었는지 확인
-        self.assertEqual(Order.objects.count(), 0)
-        self.assertEqual(Sign.objects.count(), 0)
-        self.assertEqual(OrderSign.objects.count(), 0)
+        order = Order.objects.get(pk=order_id)
+        self.assertTrue(order.canceled)
 
     def test_이미_시작한_휴가_취소하기(self):
         # when
