@@ -3,10 +3,11 @@ from datetime import date
 from django.db import models
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from grants.models import OrderSign, Grant
 from leaves.models import Leave
-from orders.exceptions import OutOfLeaveStock
+from orders.exceptions import OutOfLeaveStock, StartedLeaveCancelImpossible
 from signs.models import Sign
 
 Member = get_user_model()
@@ -49,6 +50,16 @@ class OrderManager(models.Manager):
         # 신청-결재 매핑
         OrderSign.objects.create(order=order, sign=sign, leave=leave)
         return order.pk
+
+    def cancel(self, order_id):
+        order = self.get(pk=order_id)
+        if order.start_date < timezone.now().date():
+            raise StartedLeaveCancelImpossible("지난 휴가는 취소할 수 없습니다.")
+        order_sign = order.ordersign
+        sign = order.ordersign.sign
+        order.delete()
+        order_sign.delete()
+        sign.delete()
 
     @staticmethod
     def validate_out_of_leave_stock(drafter_name, consume):

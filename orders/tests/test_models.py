@@ -1,9 +1,12 @@
 from datetime import date
 
+from django.utils import timezone
+
 from members.models import Member
 from leaves.models import Leave
-from grants.models import Grant
-from ..exceptions import OutOfLeaveStock
+from grants.models import Grant, OrderSign
+from signs.models import Sign
+from ..exceptions import OutOfLeaveStock, StartedLeaveCancelImpossible
 from ..models import Order
 
 from django.test import TestCase
@@ -38,6 +41,10 @@ class TestOrder(TestCase):
         self.assertEqual(order.drafter.username, "paul")
         self.assertEqual(order.ordersign.leave, self.연차)
 
+        self.assertEqual(Order.objects.count(), 1)
+        self.assertEqual(Sign.objects.count(), 1)
+        self.assertEqual(OrderSign.objects.count(), 1)
+
     def test_validate_out_of_leave_stock(self):
         try:
             Order.objects.order(
@@ -50,4 +57,45 @@ class TestOrder(TestCase):
         except OutOfLeaveStock:
             return
         self.fail()
+
+    def test_cancel(self):
+        # given
+        start_date, end_date = timezone.now().date(), timezone.now().date()
+        order_id = Order.objects.order(
+            drafter_name="paul",
+            is_all_day=True,
+            leave_id=self.연차.pk,
+            start_date=start_date,
+            end_date=end_date,
+        )
+        self.assertIsNotNone(Order.objects.get(pk=order_id))
+        self.assertEqual(Order.objects.count(), 1)
+        self.assertEqual(Sign.objects.count(), 1)
+        self.assertEqual(OrderSign.objects.count(), 1)
+
+        # when
+        Order.objects.cancel(order_id)
+
+        # then
+        # order, sign, ordersign의 레코드가 삭제되었는지 확인
+        self.assertEqual(Order.objects.count(), 0)
+        self.assertEqual(Sign.objects.count(), 0)
+        self.assertEqual(OrderSign.objects.count(), 0)
+
+    def test_이미_시작한_휴가_취소하기(self):
+        # when
+        start_date, end_date = date(2022, 5, 1), date(2022, 5, 1)
+        order_id = Order.objects.order(
+            drafter_name="paul",
+            is_all_day=True,
+            leave_id=self.연차.pk,
+            start_date=start_date,
+            end_date=end_date,
+        )
+        try:
+            Order.objects.cancel(order_id=order_id)
+        except StartedLeaveCancelImpossible:
+            return
+        self.fail("취소되면 안됩니다.")
+
 
