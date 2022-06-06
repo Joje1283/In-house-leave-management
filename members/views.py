@@ -1,11 +1,30 @@
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, ListView, UpdateView
 
 from .models import Member
 from .forms import MemberForm, MemberUpdateForm
 
+from django.contrib.auth.views import (
+    LoginView, logout_then_login,
+)
 
-class MemberCreateView(CreateView):
+
+class CustomLoginView(LoginView):
+    template_name = "members/login_form.html"
+
+    def form_valid(self, form):
+        messages.success(self.request, '로그인 성공!')
+        return super(CustomLoginView, self).form_valid(form)
+
+
+def logout(request):
+    messages.success(request, '로그아웃 되었습니다.')
+    return logout_then_login(request)
+
+
+class MemberCreateView(LoginRequiredMixin, CreateView):
     model = Member
     form_class = MemberForm
 
@@ -14,11 +33,11 @@ class MemberCreateView(CreateView):
         return HttpResponseRedirect("/")
 
 
-class MemberListView(ListView):
+class MemberListView(LoginRequiredMixin, ListView):
     queryset = Member.objects.order_by("-pk")
 
 
-class MemberUpdateView(UpdateView):
+class MemberUpdateView(LoginRequiredMixin, UpdateView):
     model = Member
     form_class = MemberUpdateForm
     slug_field = "username"
