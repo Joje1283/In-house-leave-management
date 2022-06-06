@@ -1,0 +1,13 @@
+{% extends "orders/layout.html" %}
+{% block title %}
+  휴가를 신청합니다
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        {% include '_form.html' with form_title="휴가 신청" submit_label='휴가 신청' %}
+      </div>
+    </div>
+  </div>
+{% endblock %}
