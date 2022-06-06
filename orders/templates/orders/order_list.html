@@ -1,0 +1,33 @@
+{% extends "orders/layout.html" %}
+{% block title %}
+  신청 내역 조회
+{% endblock %}
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>신청자</th>
+      <th>시작일</th>
+      <th>종료일</th>
+      <th>소진일</th>
+      <th>취소여부</th>
+      <th>승인여부</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in order_list %}
+      <tr>
+        <td>{{ order.pk }}</td>
+        <td>{{ order.drafter }}</td>
+        <td>{{ order.start_date }}</td>
+        <td>{{ order.end_date }}</td>
+        <td>{{ order.consume }}</td>
+        <td>{{ order.canceled }}</td>
+        <td>{{ order.ordersign.sign_type }}</td>
+      </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+{% endblock %}
