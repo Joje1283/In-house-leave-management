@@ -1,0 +1,29 @@
+{% extends "members/layout.html" %}
+{% block title %}
+  회원 조회
+{% endblock %}
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>이름</th>
+      <th>소진일</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for leave in leave_list %}
+      <tr>
+        <td>{{ leave.pk }}</td>
+        <td>{{ leave.name }}</td>
+        <td>{{ leave.consume }}</td>
+        <td>
+          <a href="{% url "leaves:leave_update" leave.pk %}" type="button" class="btn btn-outline-primary">수정</a>
+        </td>
+      </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+{% endblock %}
