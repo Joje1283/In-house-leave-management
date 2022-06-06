@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
 from members.exceptions import NotFoundMember, DuplicateMember
 
 
-class MemberManager(models.Manager):
+class MemberManager(UserManager):
     def join(self, username: str, password: str, approver_name: str = None):
         self.validate_duplicate_member(username)
         approver = None
