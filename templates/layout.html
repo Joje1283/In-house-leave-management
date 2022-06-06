@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Instagram with Ask Company</title>
+  <title>Leave Manager</title>
   <link rel="stylesheet" href="{% static 'bootstrap-4.6.1-dist/css/bootstrap.css' %}">
   {#  <script src="{% static 'jquery-3.6.0.min.js' %}"></script>#}
   {#  <script src="{% static 'jquery.form.min-4.3.0.js' %}"></script>#}
@@ -22,7 +22,7 @@
     </div>
   {% endfor %}
 {% endif %}
-<div class="container">
+<div class="container-fluid">
   <div class="row">
     <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
       <div class="sidebar-sticky">
@@ -33,7 +33,7 @@
         </ul>
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link active" href="#">
               <img src="{% static "icons/file-earmark-plus.svg" %}" alt="">
               회원 등록
             </a>
@@ -54,7 +54,7 @@
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
             <a class="nav-link" href="#">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+              <img src="{% static "icons/file-earmark-plus.svg" %}" alt="">
               휴가 타입 등록
             </a>
           </li>
@@ -122,8 +122,14 @@
 
       </div>
     </nav>
+    <main class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">{% block title %}{% endblock %}</h1>
+      </div>
+      {% block content %}
+      {% endblock %}
+    </main>
   </div>
-
 </div>
 
 </body>
