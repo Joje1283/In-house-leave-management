@@ -34,6 +34,6 @@ class MemberManager(UserManager):
 
 
 class Member(AbstractUser):
-    approver = models.ForeignKey("self", on_delete=models.DO_NOTHING, null=True, blank=True)
+    approver = models.ForeignKey(verbose_name="결재자", to="self", on_delete=models.DO_NOTHING, null=True, blank=True)
 
     objects = MemberManager()

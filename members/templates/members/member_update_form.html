@@ -1,9 +1,10 @@
 {% extends "members/layout.html" %}
 {% block title %}
-  멤버 등록
+  결재자 수정
 {% endblock %}
 {% block content %}
   <div class="container">
+    <h6>{{ member }}의 휴가 결재자를 수정합니다.</h6>
     <div class="row">
       <div class="col-sm-12">
         {% include '_form.html' with form_title='멤버추가' submit_label='제출' %}

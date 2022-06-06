@@ -1,5 +1,6 @@
 from .models import Member
 from django.contrib.auth.forms import UserCreationForm
+from django import forms
 
 
 class MemberForm(UserCreationForm):
@@ -14,3 +15,9 @@ class MemberForm(UserCreationForm):
             "approver_name": cleaned_data.get("approver").username,
             "password": cleaned_data.get("password2")
         }
+
+
+class MemberUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Member
+        fields = ("approver",)
