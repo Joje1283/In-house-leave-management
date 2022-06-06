@@ -28,7 +28,7 @@ class OrderManager(models.Manager):
         leave = Leave.objects.get(pk=leave_id)
 
         # 휴가 소진일 계산
-        consume: int = 1
+        consume: int = leave.consume
         if is_all_day:
             consume = (end_date - start_date).days
 
