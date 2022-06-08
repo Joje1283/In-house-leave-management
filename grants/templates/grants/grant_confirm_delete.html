@@ -1,0 +1,18 @@
+{% extends "grants/layout.html" %}
+
+{% block title %}
+  부여된 휴가 삭제
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        {{ grant.member }}에게 부여된 휴가({{ grant.stock }}일)를 삭제하시겠습니까?
+      </div>
+      <div class="col-sm-12">
+        {% include '_form.html' with form_title="휴가 부여" submit_label="휴가 부여" button_color="danger" %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

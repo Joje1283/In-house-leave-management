@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, ListView, UpdateView
 
+from .exceptions import DuplicateMember
 from .models import Member
 from .forms import MemberForm, MemberUpdateForm
 
@@ -29,7 +30,11 @@ class MemberCreateView(LoginRequiredMixin, CreateView):
     form_class = MemberForm
 
     def form_valid(self, form):
-        self.model.objects.join(**form.cleaned_data)
+        try:
+            self.model.objects.join(**form.cleaned_data)
+        except DuplicateMember as e:
+            form.add_error("username", e)
+            return self.form_invalid(form)
         return HttpResponseRedirect("/")
 
 

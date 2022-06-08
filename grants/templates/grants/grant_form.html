@@ -1,0 +1,15 @@
+{% extends "grants/layout.html" %}
+
+{% block title %}
+  휴가 부여
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        {% include '_form.html' with form_title="휴가 부여" submit_label="휴가 부여" %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

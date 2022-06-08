@@ -100,13 +100,13 @@
         </ul>
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url "grants:grant_create" %}">
               <img src="{% static "icons/gift.svg" %}" alt="">
               휴가 부여 하기
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{% url "grants:grant_list" %}">
               <img src="{% static "icons/file-earmark-text.svg" %}" alt="">
               부여된 휴가 내역
             </a>
