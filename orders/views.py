@@ -3,6 +3,7 @@ from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView
 
+from .exceptions import OutOfLeaveStock
 from .forms import OrderForm
 from .models import Order
 
@@ -21,7 +22,11 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
     form_class = OrderForm
 
     def form_valid(self, form):
-        self.model.objects.order(**form.cleaned_data)
+        try:
+            self.model.objects.order(**form.cleaned_data)
+        except OutOfLeaveStock as e:
+            form.add_error(None, e)
+            return super(OrderCreateView, self).form_invalid(form)
         return HttpResponseRedirect("/orders")
 
     def get_form_kwargs(self):

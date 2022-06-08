@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
 from members.exceptions import NotFoundMember, DuplicateMember
+from grants.models import Grant
 
 
 class MemberManager(UserManager):
@@ -37,3 +38,6 @@ class Member(AbstractUser):
     approver = models.ForeignKey(verbose_name="결재자", to="self", on_delete=models.DO_NOTHING, null=True, blank=True)
 
     objects = MemberManager()
+
+    def granted_leave_count(self):
+        return Grant.objects.granted_stock(username=self.username)
