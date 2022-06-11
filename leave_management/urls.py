@@ -25,4 +25,5 @@ urlpatterns = [
     path("leaves/", include("leaves.urls")),
     path("orders/", include("orders.urls")),
     path("grants/", include("grants.urls")),
+    path("signs/", include("signs.urls")),
 ]

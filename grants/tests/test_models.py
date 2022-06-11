@@ -49,6 +49,7 @@ class TestGrant(TestCase):
             end_date=date(2021, 3, 12),
         )
         order = Order.objects.get(pk=order_id)
+        order.ordersign.sign.confirm()
 
         # THEN ---------------------
         # 생성했던 10일 휴가 삭제하기
@@ -79,8 +80,11 @@ class TestGrant(TestCase):
             start_date=date(2021, 3, 1),
             end_date=date(2021, 3, 5),
         )
+
+        order = Order.objects.get(pk=order_id)
+        sign = order.ordersign.sign
+        sign.confirm()
         self.assertEqual(grant.member.remaining_leave_count, 10)
-        Order.objects.get(pk=order_id)
 
         # THEN ---------------------
         # 생성했던 5일 휴가 삭제하기

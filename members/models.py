@@ -7,6 +7,7 @@ from django.db.models import Sum
 from members.exceptions import NotFoundMember, DuplicateMember
 from grants.models import Grant
 from orders.models import Order
+from signs.models import Sign
 
 
 class MemberManager(UserManager):
@@ -47,8 +48,11 @@ class Member(AbstractUser):
 
     @property
     def consumed_leave_count(self):
-        data = Order.objects.filter(drafter=self).aggregate(Sum("consume"))
-        result = data.get("consume__sum")
+        order_id_list = Sign.objects.filter(sign_type=Sign.SignType.CONFIRM).values_list("ordersign__order", flat=True)
+        order_qs = Order.objects.filter(drafter=self)
+        order_qs = order_qs.filter(id__in=order_id_list)
+        consume_sum = order_qs.aggregate(Sum("consume"))
+        result = consume_sum.get("consume__sum")
         if result is None:
             result = 0
         return result

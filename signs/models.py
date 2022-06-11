@@ -23,5 +23,6 @@ class Sign(models.Model):
         self.sign_type = self.SignType.REJECT
         self.save()
 
+    @property
     def sign_type_to_message(self):
         return [choice[1] for choice in self.SignType.choices if choice[0] == self.sign_type][0]
