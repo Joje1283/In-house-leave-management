@@ -24,7 +24,7 @@ class GrantManager(models.Manager):
         if target_grant:
             remaining_leave_count, delete_leave_count = target_grant.member.remaining_leave_count, target_grant.stock
             if remaining_leave_count < delete_leave_count:
-                raise RemoveGrantException(f"남은 휴가가 부족합니다.\n삭제할 휴가: {target_grant.stock}, 남은 휴가: {delete_leave_count}")
+발                raise RemoveGrantException(f"남은 휴가가 부족합니다.\n삭제할 휴가: {delete_leave_count}, 남은 휴가: {remaining_leave_count}")
             target_grant.delete()
 
 
