@@ -32,7 +32,7 @@ class OrderManager(models.Manager):
             consume = (end_date - start_date).days + 1
 
         # 잔여 휴가 확인
-        self.validate_out_of_leave_stock(drafter_name=drafter_name, consume=consume)
+        self.validate_out_of_leave_stock(drafter=drafter, consume=consume)
 
         # 신청 생성
         order = self.create(
@@ -58,9 +58,9 @@ class OrderManager(models.Manager):
         order.save()
 
     @staticmethod
-    def validate_out_of_leave_stock(drafter_name, consume):
-        granted_stock = Grant.objects.granted_stock(drafter_name)
-        if granted_stock < consume:
+    def validate_out_of_leave_stock(drafter, consume):
+        remaining_leave_count = drafter.remaining_leave_count
+        if remaining_leave_count < consume:
             raise OutOfLeaveStock("휴가가 부족합니다.")
 
 
