@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+from .exceptions import OutOfLeaveStock
+
 
 class Sign(models.Model):
     approver = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
@@ -17,6 +19,10 @@ class Sign(models.Model):
 
     def confirm(self):
         self.sign_type = self.SignType.CONFIRM
+        drafter = self.ordersign.order.drafter
+        approve_leave_count = self.ordersign.order.consume
+        if drafter.remaining_leave_count < approve_leave_count:
+            raise OutOfLeaveStock("휴가가 부족합니다.")
         self.save()
 
     def reject(self):

@@ -1,0 +1,2 @@
+class OutOfLeaveStock(Exception):
+    pass
