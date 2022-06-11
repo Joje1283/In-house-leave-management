@@ -2,12 +2,15 @@ from django.db import models
 from django.db.models import Sum
 from django.contrib.auth import get_user_model
 
+from grants.exceptions import RemoveGrantException
+
 
 class GrantManager(models.Manager):
     def grant(self, username, count):
         member = get_user_model().objects.get_or_validate_not_found_member(username)
         grant = self.model(member=member, stock=count)
         grant.save()
+        return grant
 
     def granted_stock(self, username):
         data = self.filter(member__username=username).aggregate(Sum("stock"))
@@ -15,6 +18,14 @@ class GrantManager(models.Manager):
         if result is None:
             result = 0
         return result
+
+    def remove_grant(self, pk):
+        target_grant = self.filter(pk=pk).first()
+        if target_grant:
+            remaining_leave_count, delete_leave_count = target_grant.member.remaining_leave_count, target_grant.stock
+            if remaining_leave_count < delete_leave_count:
+                raise RemoveGrantException(f"남은 휴가가 부족합니다.\n삭제할 휴가: {target_grant.stock}, 남은 휴가: {delete_leave_count}")
+            target_grant.delete()
 
 
 class Grant(models.Model):

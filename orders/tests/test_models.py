@@ -37,7 +37,7 @@ class TestOrder(TestCase):
             end_date=date(2021, 3, 5),
         )
         order = Order.objects.get(pk=order_id)
-        self.assertEqual(order.consume, 4)
+        self.assertEqual(order.consume, 5)
         self.assertEqual(order.drafter.username, "paul")
         self.assertEqual(order.ordersign.leave, self.연차)
 

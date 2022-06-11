@@ -48,7 +48,7 @@ class Member(AbstractUser):
     @property
     def consumed_leave_count(self):
         data = Order.objects.filter(drafter=self).aggregate(Sum("consume"))
-        result = data.get("sonsume__sum")
+        result = data.get("consume__sum")
         if result is None:
             result = 0
         return result

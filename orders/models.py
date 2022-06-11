@@ -29,7 +29,7 @@ class OrderManager(models.Manager):
         # 휴가 소진일 계산
         consume: int = leave.consume
         if is_all_day:
-            consume = (end_date - start_date).days
+            consume = (end_date - start_date).days + 1
 
         # 잔여 휴가 확인
         self.validate_out_of_leave_stock(drafter_name=drafter_name, consume=consume)

@@ -1,0 +1,2 @@
+class RemoveGrantException(Exception):
+    pass
