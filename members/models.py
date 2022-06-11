@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
+from django.db.models import Sum
 
 from members.exceptions import NotFoundMember, DuplicateMember
 from grants.models import Grant
+from orders.models import Order
 
 
 class MemberManager(UserManager):
@@ -39,5 +41,18 @@ class Member(AbstractUser):
 
     objects = MemberManager()
 
+    @property
     def granted_leave_count(self):
         return Grant.objects.granted_stock(username=self.username)
+
+    @property
+    def consumed_leave_count(self):
+        data = Order.objects.filter(drafter=self).aggregate(Sum("consume"))
+        result = data.get("sonsume__sum")
+        if result is None:
+            result = 0
+        return result
+
+    @property
+    def remaining_leave_count(self):
+        return self.granted_leave_count - self.consumed_leave_count

@@ -10,8 +10,6 @@ from leaves.models import Leave
 from orders.exceptions import OutOfLeaveStock, StartedLeaveCancelImpossible
 from signs.models import Sign
 
-Member = get_user_model()
-
 
 class OrderManager(models.Manager):
     def order(
@@ -23,7 +21,8 @@ class OrderManager(models.Manager):
             end_date: date = None
     ):
         # 엔티티 조회
-        drafter = Member.objects.get_or_validate_not_found_member(drafter_name)
+        member_model = get_user_model()
+        drafter = member_model.objects.get_or_validate_not_found_member(drafter_name)
         approver = drafter.approver
         leave = Leave.objects.get(pk=leave_id)
 
