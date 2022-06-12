@@ -9,6 +9,7 @@
         <th>#</th>
         <th>부여 대상자</th>
         <th>부여된 일 수</th>
+        <th>설명</th>
         <th></th>
       </tr>
     </thead>
@@ -18,6 +19,7 @@
       <td>{{ grant.pk }}</td>
       <td>{{ grant.member }}</td>
       <td>{{ grant.stock }}</td>
+      <td>{{ grant.description }}</td>
       <td><a href="{% url "grants:grant_delete" grant.pk %}" type="button" class="btn btn-outline-danger">삭제</a></td>
     </tr>
     {% endfor %}

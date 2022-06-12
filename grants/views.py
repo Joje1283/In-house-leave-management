@@ -12,7 +12,7 @@ class GrantListView(LoginRequiredMixin, ListView):
 
 class GrantCreateView(LoginRequiredMixin, CreateView):
     model = Grant
-    fields = ["member", "stock"]
+    fields = ["member", "stock", "description"]
     success_url = "/grants"
 
 

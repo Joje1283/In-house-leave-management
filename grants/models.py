@@ -31,6 +31,7 @@ class GrantManager(models.Manager):
 class Grant(models.Model):
     member = models.ForeignKey(verbose_name="휴가 대상자", to="members.Member", on_delete=models.CASCADE)
     stock = models.FloatField(verbose_name="부여된 휴가 일 수")
+    description = models.CharField(verbose_name="설명", max_length=255, default="")
 
     objects = GrantManager()
 
