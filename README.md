@@ -43,7 +43,7 @@
 
 
 # 엔티티 설계
-<img width="893" alt="image" src="https://user-images.githubusercontent.com/23291627/172041723-2dbf88a0-d88d-4694-a843-cfe1ed25dee2.png">
+![image](https://user-images.githubusercontent.com/23291627/173229934-c638b071-3816-41ef-aff0-032acc35c764.png)
 
 
 # URL 설계
