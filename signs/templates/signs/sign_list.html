@@ -1,0 +1,34 @@
+{% extends "signs/layout.html" %}
+
+{% block title %}
+  결재 내역
+{% endblock %}
+
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>요청자</th>
+      <th>시작일</th>
+      <th>종료일</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for sign in sign_list %}
+    <tr>
+      <td>{{ sign.pk }}</td>
+      <td>{{ sign.ordersign.order.drafter }}</td>
+      <td>{{ sign.ordersign.order.start_date }}</td>
+      <td>{{ sign.ordersign.order.end_date }}</td>
+      {% if sign.sign_type != "STANDBY" %}
+      <td>{{ sign.sign_type_to_message }}</td>
+      {% else %}
+      <td><a href="{% url "signs:sign_update" sign.pk %}" class="btn btn-outline-primary">결재하기</a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

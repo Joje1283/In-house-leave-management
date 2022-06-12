@@ -1,12 +1,16 @@
 from __future__ import annotations
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
+from django.db.models import Sum
 
 from members.exceptions import NotFoundMember, DuplicateMember
+from grants.models import Grant
+from orders.models import Order
+from signs.models import Sign
 
 
-class MemberManager(models.Manager):
+class MemberManager(UserManager):
     def join(self, username: str, password: str, approver_name: str = None):
         self.validate_duplicate_member(username)
         approver = None
@@ -34,6 +38,25 @@ class MemberManager(models.Manager):
 
 
 class Member(AbstractUser):
-    approver = models.ForeignKey("self", on_delete=models.DO_NOTHING, null=True, blank=True)
+    approver = models.ForeignKey(verbose_name="결재자", to="self", on_delete=models.DO_NOTHING, null=True, blank=True)
 
     objects = MemberManager()
+
+    @property
+    def granted_leave_count(self):
+        return Grant.objects.granted_stock(username=self.username)
+
+    @property
+    def consumed_leave_count(self):
+        order_id_list = Sign.objects.filter(sign_type=Sign.SignType.CONFIRM).values_list("ordersign__order", flat=True)
+        order_qs = Order.objects.filter(drafter=self)
+        order_qs = order_qs.filter(id__in=order_id_list)
+        consume_sum = order_qs.aggregate(Sum("consume"))
+        result = consume_sum.get("consume__sum")
+        if result is None:
+            result = 0
+        return result
+
+    @property
+    def remaining_leave_count(self):
+        return self.granted_leave_count - self.consumed_leave_count

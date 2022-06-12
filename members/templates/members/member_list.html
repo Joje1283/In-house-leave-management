@@ -1,0 +1,27 @@
+{% extends "members/layout.html" %}
+{% block title %}
+  회원 조회
+{% endblock %}
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>이름</th>
+      <th>결재자</th>
+      <th>등록일</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for member in member_list %}
+      <tr>
+        <td>{{ member.pk }}</td>
+        <td><a href="{% url "members:member_update" member.username %}">{{ member.username }}</a></td>
+        <td>{% if member.approver %}{{ member.approver }}{% else %}결재자가 없습니다{% endif %}</td>
+        <td>{{ member.date_joined }}</td>
+      </tr>
+    {% endfor %}
+
+    </tbody>
+  </table>
+{% endblock %}

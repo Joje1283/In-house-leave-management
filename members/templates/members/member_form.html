@@ -1,0 +1,13 @@
+{% extends "members/layout.html" %}
+{% block title %}
+  멤버 등록
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        {% include '_form.html' with form_title='멤버추가' submit_label='제출' %}
+      </div>
+    </div>
+  </div>
+{% endblock %}

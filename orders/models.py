@@ -10,8 +10,6 @@ from leaves.models import Leave
 from orders.exceptions import OutOfLeaveStock, StartedLeaveCancelImpossible
 from signs.models import Sign
 
-Member = get_user_model()
-
 
 class OrderManager(models.Manager):
     def order(
@@ -23,17 +21,18 @@ class OrderManager(models.Manager):
             end_date: date = None
     ):
         # 엔티티 조회
-        drafter = Member.objects.get_or_validate_not_found_member(drafter_name)
+        member_model = get_user_model()
+        drafter = member_model.objects.get_or_validate_not_found_member(drafter_name)
         approver = drafter.approver
         leave = Leave.objects.get(pk=leave_id)
 
         # 휴가 소진일 계산
-        consume: int = 1
+        consume: int = leave.consume
         if is_all_day:
-            consume = (end_date - start_date).days
+            consume = (end_date - start_date).days + 1
 
         # 잔여 휴가 확인
-        self.validate_out_of_leave_stock(drafter_name=drafter_name, consume=consume)
+        self.validate_out_of_leave_stock(drafter=drafter, consume=consume)
 
         # 신청 생성
         order = self.create(
@@ -59,9 +58,9 @@ class OrderManager(models.Manager):
         order.save()
 
     @staticmethod
-    def validate_out_of_leave_stock(drafter_name, consume):
-        granted_stock = Grant.objects.granted_stock(drafter_name)
-        if granted_stock < consume:
+    def validate_out_of_leave_stock(drafter, consume):
+        remaining_leave_count = drafter.remaining_leave_count
+        if remaining_leave_count < consume:
             raise OutOfLeaveStock("휴가가 부족합니다.")
 
 

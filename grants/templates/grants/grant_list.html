@@ -1,0 +1,28 @@
+{% extends "grants/layout.html" %}
+{% block title %}
+  휴가 부여 내역
+{% endblock %}
+{% block content %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>부여 대상자</th>
+        <th>부여된 일 수</th>
+        <th>설명</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for grant in grant_list %}
+    <tr>
+      <td>{{ grant.pk }}</td>
+      <td>{{ grant.member }}</td>
+      <td>{{ grant.stock }}</td>
+      <td>{{ grant.description }}</td>
+      <td><a href="{% url "grants:grant_delete" grant.pk %}" type="button" class="btn btn-outline-danger">삭제</a></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
