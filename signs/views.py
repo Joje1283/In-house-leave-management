@@ -10,6 +10,11 @@ from django.views.generic import UpdateView, ListView
 class SignListView(LoginRequiredMixin, ListView):
     queryset = Sign.objects.order_by("-pk")
 
+    def get_queryset(self):
+        qs = super(SignListView, self).get_queryset()
+        qs = qs.filter(approver=self.request.user)
+        return qs
+
 
 class SignUpdateView(LoginRequiredMixin, UpdateView):
     model = Sign
