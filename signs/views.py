@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 
 from .exceptions import OutOfLeaveStock
@@ -6,11 +7,11 @@ from .models import Sign
 from django.views.generic import UpdateView, ListView
 
 
-class SignListView(ListView):
+class SignListView(LoginRequiredMixin, ListView):
     queryset = Sign.objects.order_by("-pk")
 
 
-class SignUpdateView(UpdateView):
+class SignUpdateView(LoginRequiredMixin, UpdateView):
     model = Sign
     success_url = "/signs"
     fields = ["sign_type"]
