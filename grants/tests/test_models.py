@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 
 from leaves.models import Leave
+from members.models import Member
 from orders.models import Order
 from ..exceptions import RemoveGrantException
 from ..models import Grant
@@ -49,7 +50,8 @@ class TestGrant(TestCase):
             end_date=date(2021, 3, 12),
         )
         order = Order.objects.get(pk=order_id)
-        order.ordersign.sign.confirm()
+        approver = Member.objects.get(username="daniel")
+        order.ordersign.sign.confirm(approver)
 
         # THEN ---------------------
         # 생성했던 10일 휴가 삭제하기
@@ -83,7 +85,8 @@ class TestGrant(TestCase):
 
         order = Order.objects.get(pk=order_id)
         sign = order.ordersign.sign
-        sign.confirm()
+        approver = Member.objects.get(username="daniel")
+        sign.confirm(approver)
         self.assertEqual(grant.member.remaining_leave_count, 10)
 
         # THEN ---------------------

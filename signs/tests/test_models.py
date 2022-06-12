@@ -37,15 +37,17 @@ class TestSign(TestCase):
         self.sign_id = order.ordersign.sign.pk
 
     def test_confirm(self):
+        approver=Member.objects.get(username="daniel")
         sign = Sign.objects.get(pk=self.sign_id)
         self.assertEqual(sign.sign_type, Sign.SignType.STANDBY)
-        sign.confirm()
+        sign.confirm(approver)
         sign = Sign.objects.get(pk=self.sign_id)
         self.assertEqual(sign.sign_type, Sign.SignType.CONFIRM)
 
     def test_reject(self):
+        approver = Member.objects.get(username="daniel")
         sign = Sign.objects.get(pk=self.sign_id)
         self.assertEqual(sign.sign_type, Sign.SignType.STANDBY)
-        sign.reject()
+        sign.reject(approver)
         sign = Sign.objects.get(pk=self.sign_id)
         self.assertEqual(sign.sign_type, Sign.SignType.REJECT)
