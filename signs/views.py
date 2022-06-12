@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 
-from .exceptions import OutOfLeaveStock
+from .exceptions import OutOfLeaveStock, NotApproverError
 from .models import Sign
 
 from django.views.generic import UpdateView, ListView
@@ -26,13 +26,17 @@ class SignUpdateView(LoginRequiredMixin, UpdateView):
             pk = self.kwargs.get("pk")
             sign = Sign.objects.get(pk=pk)
             sign_type = form.cleaned_data.get("sign_type")
+            approver = self.request.user
             if sign_type == Sign.SignType.CONFIRM:
-                sign.confirm()
+                sign.confirm(approver)
             elif sign_type == Sign.SignType.REJECT:
-                sign.reject()
+                sign.reject(approver)
             else:
-                return super(SignUpdateView, self).form_valid(form)
+                sign.cancel(approver)
+            return HttpResponseRedirect("/signs")
         except OutOfLeaveStock as e:
             form.add_error(None, e)
             return self.form_invalid(form)
-        return HttpResponseRedirect("/signs")
+        except NotApproverError as e:
+            form.add_error(None, e)
+            return self.form_invalid(form)

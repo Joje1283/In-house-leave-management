@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 
-from .exceptions import OutOfLeaveStock
+from .exceptions import OutOfLeaveStock, NotApproverError
 
 
 class Sign(models.Model):
@@ -17,7 +17,9 @@ class Sign(models.Model):
     def __str__(self):
         return f"{self.approver} - {self.sign_type}"
 
-    def confirm(self):
+    def confirm(self, approver):
+        if self.approver != approver:
+            raise NotApproverError("결재자만 결재가 가능합니다.")
         self.sign_type = self.SignType.CONFIRM
         drafter = self.ordersign.order.drafter
         approve_leave_count = self.ordersign.order.consume
@@ -25,8 +27,16 @@ class Sign(models.Model):
             raise OutOfLeaveStock("휴가가 부족합니다.")
         self.save()
 
-    def reject(self):
+    def reject(self, approver):
+        if self.approver != approver:
+            raise NotApproverError("결재자만 결재가 가능합니다.")
         self.sign_type = self.SignType.REJECT
+        self.save()
+
+    def cancel(self, approver):
+        if self.approver != approver:
+            raise NotApproverError("결재자만 수정이 가능합니다.")
+        self.sign_type = self.SignType.STANDBY
         self.save()
 
     @property
