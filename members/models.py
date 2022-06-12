@@ -60,3 +60,6 @@ class Member(AbstractUser):
     @property
     def remaining_leave_count(self):
         return self.granted_leave_count - self.consumed_leave_count
+
+    def is_group(self, name):
+        return self.groups.filter(name=name).exists()
