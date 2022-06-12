@@ -9,7 +9,7 @@ from .models import Order
 
 
 class OrderListView(LoginRequiredMixin, ListView):
-    model = Order
+    queryset = Order.objects.order_by("-pk")
 
     def get_queryset(self):
         qs: QuerySet[Order] = super(OrderListView, self).get_queryset()
