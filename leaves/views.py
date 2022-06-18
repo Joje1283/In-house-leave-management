@@ -8,7 +8,7 @@ from .models import Leave
 
 class LeaveCreateView(PermissionRequiredMixin, CreateView):
     model = Leave
-    success_url = "/"
+    success_url = "/leaves"
     fields = "__all__"
     permission_required = "leaves.add_leave"
     permission_denied_message = "people팀 계정으로 로그인 바랍니다."
