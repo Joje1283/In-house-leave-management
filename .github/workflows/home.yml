@@ -36,6 +36,7 @@ jobs:
             -e DB_HOST="${{ secrets.DB_HOST }}" \
             -e DB_PORT="${{ secrets.DB_PORT }}" \
             -e STATIC_ROOT="${{ secrets.STATIC_ROOT }}" \
+            -e SENTRY_DSN="${{ secrets.SENTRY_DSN }}" \
             -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" leave_api
           cd ~/Projects/In-house-leave-management
           git checkout main
