@@ -12,6 +12,7 @@ class SignListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs = super(SignListView, self).get_queryset()
+        qs = qs.select_related("ordersign__order", "ordersign__order__drafter")
         qs = qs.filter(approver=self.request.user)
         return qs
 
