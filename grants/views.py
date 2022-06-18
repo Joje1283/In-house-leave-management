@@ -9,7 +9,7 @@ from .models import Grant
 
 
 class GrantListView(PermissionRequiredMixin, ListView):
-    queryset = Grant.objects.order_by("-pk")
+    queryset = Grant.objects.select_related("member").order_by("-pk")
     permission_required = "grants.view_grant"
     permission_denied_message = "people팀 계정으로 로그인 바랍니다."
 
