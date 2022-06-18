@@ -47,7 +47,7 @@ class MemberCreateView(PermissionRequiredMixin, CreateView):
 
 
 class MemberListView(PermissionRequiredMixin, ListView):
-    queryset = Member.objects.order_by("-pk")
+    queryset = Member.objects.select_related("approver").order_by("-pk")
     permission_required = "members.view_member"
     permission_denied_message = "people팀 계정으로 로그인 바랍니다."
 

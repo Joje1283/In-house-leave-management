@@ -13,7 +13,7 @@ class OrderListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         qs: QuerySet[Order] = super(OrderListView, self).get_queryset()
-        qs = qs.filter(drafter=self.request.user)
+        qs = qs.select_related("drafter", "ordersign__sign").filter(drafter=self.request.user)
         return qs
 
 
