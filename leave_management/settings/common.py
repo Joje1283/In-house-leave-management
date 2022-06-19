@@ -40,6 +40,7 @@ PROJECT_APPS = [
     "leaves",
     "orders",
     "signs",
+    "push",
 ]
 
 INSTALLED_APPS = [
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bootstrap4',
+    'django_celery_results',
 ] + PROJECT_APPS
 
 
@@ -147,3 +149,8 @@ LOGIN_URL = "/members/login/"
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TIMEZONE = 'Asia/Seoul'
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
