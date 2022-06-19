@@ -1,4 +1,4 @@
-# 정적 파일이 위치하는 서버에 backports-zoneinfo 패키지를 추가로 설치한다 -> poetry add --no-dev backports-zoneinfo
+# 정적 파일이 위치하는 서버에 backports-zoneinfo 패키지를 추가로 설치한다 -> pip install backports-zoneinfo (poetry install 이후 설치)
 # 미 설치시 collectstatic 명령이 안된다.
 
 name: Docker Image CI
@@ -44,7 +44,7 @@ jobs:
             -e SENTRY_DSN="${{ secrets.SENTRY_DSN }}" \
             -e CELERY_BROKER_URL="${{ secrets.CELERY_BROKER_URL }}" \
             -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" leave_api
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
+          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7}
           docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7} push_worker
           docker stop push_worker 
           docker run -d --rm --name push_worker -p 8000:8000 \
@@ -60,4 +60,5 @@ jobs:
           cd ~/Projects/In-house-leave-management
           git checkout feature/푸시_시스템_개발
           git pull
-          /home/paul/.pyenv/shims/python manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
+          poetry install
+          poetry run ./manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
