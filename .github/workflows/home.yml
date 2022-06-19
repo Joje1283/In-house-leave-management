@@ -12,12 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
+    - name: Build Docker Image for Server
       run: | 
         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }} 
         docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7} --build-arg YOUR_ENV=production
-        docker build . --file DockerfileForWorker --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7} --build-arg YOUR_ENV=production
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
+    - name: Build Docker Image for Worker
+      run: |
+        docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }} 
+        docker build . --file DockerfileForWorker --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7} --build-arg YOUR_ENV=production
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7}
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master  # docs: https://github.com/marketplace/actions/ssh-remote-commands?version=v0.1.4
       with:
