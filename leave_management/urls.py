@@ -17,6 +17,7 @@ urlpatterns = [
     path("orders/", include("orders.urls")),
     path("grants/", include("grants.urls")),
     path("signs/", include("signs.urls")),
+    path("push/", include("push.urls")),
     path('paul-sentry-debug/', trigger_error),
 ]
 
