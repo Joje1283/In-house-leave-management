@@ -1,4 +1,7 @@
+import sentry_sdk
 from celery import shared_task
+
+from members.models import Member
 
 """
 # 실행 방법 예시 (shell)
@@ -13,3 +16,12 @@ push_print.apply_async(["안녕하세요 폴222"], eta=datetime.now() + timedelt
 @shared_task
 def push_print(s):
     print(s)
+
+
+@shared_task
+def send_welcome_email(username: str):
+    try:
+        member = Member.objects.get(username=username)
+        member.send_welcome_email()
+    except Exception as e:
+        sentry_sdk.capture_exception(e)
