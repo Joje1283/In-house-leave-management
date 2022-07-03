@@ -154,3 +154,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TIMEZONE = 'Asia/Seoul'
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+
+
+# AWS SES setting
+# https://github.com/azavea/django-amazon-ses
+# pip install django-amazon-ses
+WELCOME_EMAIL_SENDER = os.getenv("WELCOME_EMAIL_SENDER")
+EMAIL_BACKEND = 'django_amazon_ses.EmailBackend'
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_DEFAULT_REGION = os.getenv("AWS_DEFAULT_REGION")

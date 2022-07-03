@@ -1,8 +1,11 @@
 from __future__ import annotations
 
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.core.mail import send_mail
 from django.db import models
 from django.db.models import Sum
+from django.template.loader import render_to_string
+from django.conf import settings
 
 from members.exceptions import NotFoundMember, DuplicateMember
 from grants.models import Grant
@@ -63,3 +66,11 @@ class Member(AbstractUser):
 
     def is_group(self, name):
         return self.groups.filter(name=name).exists()
+
+    def send_welcome_email(self):
+        subject = render_to_string('members/welcome_email_subject.txt')
+        content = render_to_string('members/welcome_email_content.txt', {
+            "user": self,
+        })
+        sender_email = settings.WELCOME_EMAIL_SENDER
+        return send_mail(subject, content, sender_email, [self.email], fail_silently=False)
