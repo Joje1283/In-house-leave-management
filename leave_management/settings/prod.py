@@ -43,3 +43,6 @@ sentry_sdk.init(
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True
 )
+
+# rabbitMQ
+# sudo docker run -d --name rabbitmq -p {{your_port}}:{{your_port}} -p {{your_web_port}}:{{your_web_port}} --restart=unless-stopped -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS={{your password}} rabbitmq:management
