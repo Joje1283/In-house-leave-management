@@ -1,5 +1,7 @@
 import sentry_sdk
 from celery import shared_task
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from members.models import Member
 
@@ -25,3 +27,8 @@ def send_welcome_email(username: str):
         member.send_welcome_email()
     except Exception as e:
         sentry_sdk.capture_exception(e)
+
+
+@shared_task
+def send_email_push(from_address, to_address_list, subject, content):
+    return send_mail(subject, content, from_address, to_address_list, fail_silently=False)
