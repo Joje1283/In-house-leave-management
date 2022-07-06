@@ -1,0 +1,3 @@
+# https://doing7.tistory.com/53
+* linguist-vendored
+*.python linguist-vendored=false
