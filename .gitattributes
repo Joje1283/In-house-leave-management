@@ -1,3 +1,4 @@
 # https://doing7.tistory.com/53
+*.js linguist-detectable=false
 * linguist-vendored
 *.python linguist-vendored=false
