@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+from push.models import PushMessage
 from .exceptions import OutOfLeaveStock, NotApproverError
 
 
@@ -26,12 +27,34 @@ class Sign(models.Model):
         if drafter.remaining_leave_count < approve_leave_count:
             raise OutOfLeaveStock("휴가가 부족합니다.")
         self.save()
+        from push.tasks import send_email_push
+        title, message = PushMessage.get_message(
+            push_key=PushMessage.PushType.APPROVE_BY_APPROVER,
+            name=approver.username
+        )
+        send_email_push.apply_async([  # params: from_address, to_address_list, subject, content
+            settings.WELCOME_EMAIL_SENDER,
+            self.ordersign.order.drafter.email,
+            title,
+            message
+        ], queue="paul_worker")
 
     def reject(self, approver):
         if self.approver != approver:
             raise NotApproverError("결재자만 결재가 가능합니다.")
         self.sign_type = self.SignType.REJECT
         self.save()
+        from push.tasks import send_email_push
+        title, message = PushMessage.get_message(
+            push_key=PushMessage.PushType.DENY_BY_APPROVER,
+            name=approver.username
+        )
+        send_email_push.apply_async([  # params: from_address, to_address_list, subject, content
+            settings.WELCOME_EMAIL_SENDER,
+            self.ordersign.order.drafter.email,
+            title,
+            message
+        ], queue="paul_worker")
 
     def cancel(self, approver):
         if self.approver != approver:
