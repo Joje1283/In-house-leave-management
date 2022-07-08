@@ -1,6 +1,28 @@
 
+from django.conf import settings
 from django.test import TestCase
+from django.test.runner import DiscoverRunner
 from .models import PushMessage
+from celery import current_app
+
+
+class TestRunner(DiscoverRunner):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def __disable_celery():
+        settings.CELERY_BROKER_URL = current_app.conf.CELERY_BROKER_URL = f'filesystem:///dev/null/'
+        settings.BROKER_TRANSPORT_OPTIONS = current_app.conf.BROKER_TRANSPORT_OPTIONS = {
+            'data_folder_in': '/tmp',
+            'data_folder_out': '/tmp',
+            'data_folder_processed': '/tmp',
+        }
+
+    def setup_test_environment(self, **kwargs):
+        TestRunner.__disable_celery()
+        super(TestRunner, self).setup_test_environment(**kwargs)
 
 
 class TestPushMessage(TestCase):
