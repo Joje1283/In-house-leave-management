@@ -5,7 +5,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feature/푸시_알림_적용 ]
 
 jobs:
   build:
@@ -66,7 +66,7 @@ jobs:
             -e AWS_DEFAULT_REGION="${{ secrets.AWS_DEFAULT_REGION }}" \
             -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" push_worker
           cd ~/Projects/In-house-leave-management
-          git checkout main
+          git checkout feature/푸시_알림_적용
           git pull
           /home/paul/.local/bin/poetry install
           /home/paul/.local/bin/poetry run ./manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input

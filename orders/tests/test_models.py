@@ -5,6 +5,7 @@ from django.utils import timezone
 from members.models import Member
 from leaves.models import Leave
 from grants.models import Grant, OrderSign
+from push.models import PushMessage
 from signs.models import Sign
 from ..exceptions import OutOfLeaveStock, StartedLeaveCancelImpossible
 from ..models import Order
@@ -27,6 +28,13 @@ class TestOrder(TestCase):
         # 휴가 부여
         Grant.objects.grant(username="paul", count=15)
         Grant.objects.grant(username="john", count=15)
+
+        # 푸시 메시지 생성
+        PushMessage.objects.create(push_key="APPROVE", title="휴가가 수락되었습니다.", message="{name}이(가) 휴가를 수락합니다.")  # 휴가 수락
+        PushMessage.objects.create(push_key="DENY", title="휴가가 반려되었습니다.",
+                                   message="{name}이(가) 휴가를 반려합니다. \n사유: {reason}")  # 휴가 반려
+        PushMessage.objects.create(push_key="REQUEST", title="휴가 요청", message="{name}이(가) 휴가를 요청합니다.")  # 휴가 신청
+        PushMessage.objects.create(push_key="CANCEL", title="휴가 취소", message="{name}이(가) 휴가를 취소합니다.")  # 휴가 취소
 
     def test_order(self):
         order_id = Order.objects.order(
