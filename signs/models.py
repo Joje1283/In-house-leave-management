@@ -47,7 +47,8 @@ class Sign(models.Model):
         from push.tasks import send_email_push
         title, message = PushMessage.get_message(
             push_key=PushMessage.PushType.DENY_BY_APPROVER,
-            name=approver.username
+            name=approver.username,
+            reason="지금 너무 바빠요."
         )
         send_email_push.apply_async([  # params: from_address, to_address_list, subject, content
             settings.WELCOME_EMAIL_SENDER,
