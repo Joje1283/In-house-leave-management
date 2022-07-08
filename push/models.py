@@ -16,4 +16,4 @@ class PushMessage(models.Model):
     def get_message(cls, push_key, **kwargs):
         push_message = cls.objects.filter(push_key=push_key).first()
         push_message.message.format(**kwargs)
-        return push_message.message.format(**kwargs)
+        return push_message.title, push_message.message.format(**kwargs)
