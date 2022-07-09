@@ -1,9 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import QuerySet
 from django.http import HttpResponseRedirect
 from django.views.generic import ListView, CreateView
+from django.contrib import messages
 
-from .exceptions import OutOfLeaveStock
+from .exceptions import OutOfLeaveStock, StartedLeaveCancelImpossible
 from .forms import OrderForm
 from .models import Order
 
@@ -36,3 +38,12 @@ class OrderCreateView(LoginRequiredMixin, CreateView):
         # Update the kwargs with the user_id
         kwargs['user'] = self.request.user
         return kwargs
+
+
+@login_required
+def order_cancel_view(request, pk):
+    try:
+        Order.objects.cancel(pk)
+    except StartedLeaveCancelImpossible as e:
+        messages.info(request, e, "danger")
+    return HttpResponseRedirect("/orders")

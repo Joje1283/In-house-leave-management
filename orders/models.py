@@ -70,7 +70,7 @@ class OrderManager(models.Manager):
         order.save()
         from push.tasks import send_email_push
         title, message = PushMessage.get_message(
-            push_key=PushMessage.PushType.REQUEST_BY_DRAFTER,
+            push_key=PushMessage.PushType.CANCEL_BY_DRAFTER,
             name=order.drafter.username
         )
         send_email_push.apply_async([  # params: from_address, to_address_list, subject, content
