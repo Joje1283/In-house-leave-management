@@ -1,3 +1,4 @@
+import sys
 from datetime import date
 
 from django.db import models
@@ -8,6 +9,7 @@ from django.utils import timezone
 from grants.models import OrderSign, Grant
 from leaves.models import Leave
 from orders.exceptions import OutOfLeaveStock, StartedLeaveCancelImpossible
+from push.models import PushMessage
 from signs.models import Sign
 
 
@@ -48,6 +50,16 @@ class OrderManager(models.Manager):
 
         # 신청-결재 매핑
         OrderSign.objects.create(order=order, sign=sign, leave=leave)
+
+        # 푸시 알림
+        from push.tasks import send_email_push
+        title, message = PushMessage.get_message(push_key=PushMessage.PushType.REQUEST_BY_DRAFTER, name=drafter_name)
+        send_email_push.apply_async([  # params: from_address, to_address_list, subject, content
+            settings.WELCOME_EMAIL_SENDER,
+            approver.email,
+            title,
+            message
+        ], queue="paul_worker")
         return order.pk
 
     def cancel(self, order_id):
@@ -56,6 +68,17 @@ class OrderManager(models.Manager):
             raise StartedLeaveCancelImpossible("지난 휴가는 취소할 수 없습니다.")
         order.canceled = True
         order.save()
+        from push.tasks import send_email_push
+        title, message = PushMessage.get_message(
+            push_key=PushMessage.PushType.CANCEL_BY_DRAFTER,
+            name=order.drafter.username
+        )
+        send_email_push.apply_async([  # params: from_address, to_address_list, subject, content
+            settings.WELCOME_EMAIL_SENDER,
+            order.ordersign.sign.approver.email,
+            title,
+            message
+        ], queue="paul_worker")
 
     @staticmethod
     def validate_out_of_leave_stock(drafter, consume):
