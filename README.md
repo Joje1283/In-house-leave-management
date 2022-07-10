@@ -38,28 +38,14 @@
 - 휴가 부여
 - 남은 휴가 확인
 
+### 푸시 기능
+
+- 휴가 신청, 취소 시 결재자에게 푸시
+- 휴가 수락, 반려 시 신청자에게 푸시
+
 # 도메인 모델 설계
 <img width="572" alt="image" src="https://user-images.githubusercontent.com/23291627/172041701-46d2198e-8113-4c75-bdd8-860db97a44b4.png">
 
 
 # 엔티티 설계
 ![image](https://user-images.githubusercontent.com/23291627/173229934-c638b071-3816-41ef-aff0-032acc35c764.png)
-
-
-# URL 설계
-```
-"""
-url
-휴가 승인: /members/1/signs/5/confirm
-휴가 반려: /members/1/signs/5/reject
-
-휴가 신청: /members/1/orders/new
-휴가 조회: /members/1/orders/
-
-휴가 부여 /grants/new
-
-휴가 생성 /leaves/new
-"""
-```
-
-
