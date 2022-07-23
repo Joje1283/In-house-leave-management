@@ -33,4 +33,5 @@ jobs:
         port: ${{ secrets.SERVER_PORT }}
         envs: GITHUB_SHA
         script: |
-          kubectl apply -f /home/paul/Projects/k8s/leave_management/leave-ingress.yml
+          kubectl set image deployment/leave-v1 leave=joje1283/leave:${GITHUB_SHA::7}
+# 배포 이미지 교체 명령 : kubectl set image {{deployment-name}} {{container-name}}=image-name
