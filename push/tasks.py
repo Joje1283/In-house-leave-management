@@ -23,8 +23,11 @@ def push_print(s):
 @shared_task
 def send_welcome_email(username: str):
     try:
+        print("start send_welcome_email")
         member = Member.objects.get(username=username)
-        member.send_welcome_email()
+        print(f"{member.username}에게 메일을 보냅니다.")
+        result = member.send_welcome_email()
+        print(result)
     except Exception as e:
         sentry_sdk.capture_exception(e)
 

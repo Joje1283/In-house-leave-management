@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leave-push-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: leave-push-worker
+      tier: app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: leave-push-worker
+        tier: app
+        version: v1
+    spec:
+      # 이메일 기능을 위해 외부 DNS 설정을 사용하도록 수정 (dnsPolicy, dnsConfig)
+      dnsPolicy: None
+      dnsConfig:
+        nameservers:
+          - 8.8.8.8
+          - 8.8.4.4
+        searches:
+          - example.com
+        options:
+          - name: dots
+            value: "5"
+      containers:
+        - name: leave
+          image: joje1283/leave_push_worker:latest
+          ports:
+          - containerPort: 8080
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: "{{ DJANGO_SETTINGS_MODULE }}"
+            - name: DB_USER
+              value: "{{ DB_USER }}"
+            - name: DB_PASSWORD
+              value: "{{ DB_PASSWORD }}"
+            - name: DB_HOST
+              value: "{{ DB_HOST }}"
+            - name: DB_PORT
+              value: "{{ DB_PORT }}"
+            - name: SECRET_KEY
+              value: "{{ SECRET_KEY }}"
+            - name: AWS_ACCESS_KEY_ID
+              value: "{{ AWS_ACCESS_KEY_ID }}"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "{{ AWS_SECRET_ACCESS_KEY }}"
+            - name: AWS_DEFAULT_REGION
+              value: "{{ AWS_DEFAULT_REGION }}"
+            - name: WELCOME_EMAIL_SENDER
+              value: "{{ WELCOME_EMAIL_SENDER }}"
+            - name: ALLOWED_HOST
+              value: "{{ ALLOWED_HOST }}"
+            - name: CELERY_BROKER_URL
+              value: "{{ CELERY_BROKER_URL }}"
+            - name: SENTRY_DSN
+              value: "{{ SENTRY_DSN }}"

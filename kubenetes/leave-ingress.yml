@@ -1,0 +1,82 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: leave-v1
+spec:
+  rules:
+    - host: v1.echo.{{ minikube_ip }}.sslip.io  # minikube ingress 활성화 -> minikube addons enable ingress
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: leave-v1  # service 이름
+                port:
+                  number: 8000
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: leave-v1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: leave  # deployment 이름
+      tier: app
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: leave
+        tier: app
+        version: v1
+    spec:
+      containers:
+        - name: leave
+          image: {{ container_image }}
+          ports:
+          - containerPort: 8000
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: "{{ DJANGO_SETTINGS_MODULE }}"
+            - name: DB_USER
+              value: "{{ DB_USER }}"
+            - name: DB_PASSWORD
+              value: "{{ DB_PASSWORD }}"
+            - name: DB_HOST
+              value: "{{ DB_HOST }}"
+            - name: DB_PORT
+              value: "{{ DB_PORT }}"
+            - name: SECRET_KEY
+              value: "{{ SECRET_KEY }}"
+            - name: AWS_ACCESS_KEY_ID
+              value: "{{ AWS_ACCESS_KEY_ID }}"
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "{{ AWS_SECRET_ACCESS_KEY }}"
+            - name: AWS_DEFAULT_REGION
+              value: "{{ AWS_DEFAULT_REGION }}"
+            - name: WELCOME_EMAIL_SENDER
+              value: "{{ WELCOME_EMAIL_SENDER }}"
+            - name: ALLOWED_HOST
+              value: "{{ ALLOWED_HOST }}"
+            - name: CELERY_BROKER_URL
+              value: "{{ CELERY_BROKER_URL }}"
+            - name: SENTRY_DSN
+              value: "{{ SENTRY_DSN }}"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: leave-v1  # service 이름
+spec:
+  ports:
+    - port: 8000
+      protocol: TCP
+  selector:
+    app: leave  # deployment 이름
+    tier: app
+    version: v1
