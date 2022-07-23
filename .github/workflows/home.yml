@@ -5,7 +5,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ feature/쿠버네티스_적용 ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -36,7 +36,7 @@ jobs:
           kubectl set image deployment/leave-v1 leave=joje1283/leave:${GITHUB_SHA::7}
           kubectl set image deployment/leave-push-worker leave=joje1283/leave_push_worker:${GITHUB_SHA::7}
           cd ~/Projects/In-house-leave-management
-          git checkout feature/쿠버네티스_적용
+          git checkout main
           git pull
           /home/paul/.local/bin/poetry install
           /home/paul/.local/bin/poetry run ./manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
