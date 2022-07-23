@@ -24,4 +24,13 @@ jobs:
         docker build . --file DockerfileForWorker --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7} --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:latest --build-arg YOUR_ENV=production
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7}
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:latest
-# 테스트 배포를 위한 주석
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master  # docs: https://github.com/marketplace/actions/ssh-remote-commands?version=v0.1.4
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USERNAME }}
+        password: ${{ secrets.SERVER_PASSWORD }}
+        port: ${{ secrets.SERVER_PORT }}
+        envs: GITHUB_SHA
+        script: |
+          kubectl apply -f /home/paul/Projects/k8s/leave_management/leave-ingress.yml
