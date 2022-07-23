@@ -26,7 +26,7 @@ RUN poetry config virtualenvs.create false \
 # Creating folders, and files for a project:
 COPY . /code
 
-EXPOSE 8000
+EXPOSE 8080
 # RUN poetry run django test
 RUN poetry run ./manage.py test --settings=leave_management.settings.prod --parallel 4
 CMD ["celery", "-A", "leave_management", "worker", "-l", "INFO", "-Q", "paul_worker"]
