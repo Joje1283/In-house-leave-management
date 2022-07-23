@@ -73,4 +73,5 @@ class Member(AbstractUser):
             "user": self,
         })
         sender_email = settings.WELCOME_EMAIL_SENDER
+        print(f"""subject: {subject}\ncontent: {content}\nsender_email: {sender_email}\ntarget: {self.email}""")
         return send_mail(subject, content, sender_email, [self.email], fail_silently=False)
