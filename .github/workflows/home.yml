@@ -5,7 +5,7 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ feature/쿠버네티스_적용 ]
 
 jobs:
   build:
@@ -15,58 +15,10 @@ jobs:
     - name: Build Docker Image for Server
       run: | 
         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }} 
-        docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7} --build-arg YOUR_ENV=production
+        docker build . --file Dockerfile --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7} --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:latest --build-arg YOUR_ENV=production
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
     - name: Build Docker Image for Worker
       run: |
         docker login -u ${{ secrets.DOCKER_HUB_USERNAME }} -p ${{ secrets.DOCKER_HUB_PASSWORD }} 
-        docker build . --file DockerfileForWorker --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7} --build-arg YOUR_ENV=production
+        docker build . --file DockerfileForWorker --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7} --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:latest --build-arg YOUR_ENV=production
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7}
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master  # docs: https://github.com/marketplace/actions/ssh-remote-commands?version=v0.1.4
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        username: ${{ secrets.SERVER_USERNAME }}
-        password: ${{ secrets.SERVER_PASSWORD }}
-        port: ${{ secrets.SERVER_PORT }}
-        envs: GITHUB_SHA
-        script: |
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7}
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave:${GITHUB_SHA::7} leave_api
-          docker stop server 
-          docker run -d --rm --name server -p 8000:8000 \
-            -e DJANGO_SETTINGS_MODULE=leave_management.settings.prod \
-            -e DB_USER="${{ secrets.DB_USER }}" \
-            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            -e DB_HOST="${{ secrets.DB_HOST }}" \
-            -e DB_PORT="${{ secrets.DB_PORT }}" \
-            -e STATIC_ROOT="${{ secrets.STATIC_ROOT }}" \
-            -e SENTRY_DSN="${{ secrets.SENTRY_DSN }}" \
-            -e CELERY_BROKER_URL="${{ secrets.CELERY_BROKER_URL }}" \
-            -e WELCOME_EMAIL_SENDER="${{ secrets.WELCOME_EMAIL_SENDER }}" \
-            -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
-            -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -e AWS_DEFAULT_REGION="${{ secrets.AWS_DEFAULT_REGION }}" \
-            -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" leave_api
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7}
-          docker tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7} push_worker
-          docker stop push_worker 
-          docker run -d --rm --name push_worker -p 8001:8001 \
-            -e DJANGO_SETTINGS_MODULE=leave_management.settings.prod \
-            -e DB_USER="${{ secrets.DB_USER }}" \
-            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            -e DB_HOST="${{ secrets.DB_HOST }}" \
-            -e DB_PORT="${{ secrets.DB_PORT }}" \
-            -e STATIC_ROOT="${{ secrets.STATIC_ROOT }}" \
-            -e SENTRY_DSN="${{ secrets.SENTRY_DSN }}" \
-            -e CELERY_BROKER_URL="${{ secrets.CELERY_BROKER_URL }}" \
-            -e WELCOME_EMAIL_SENDER="${{ secrets.WELCOME_EMAIL_SENDER }}" \
-            -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
-            -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-            -e AWS_DEFAULT_REGION="${{ secrets.AWS_DEFAULT_REGION }}" \
-            -e SECRET_KEY="${{ secrets.DJANGO_SECRET_KEY }}" push_worker
-          cd ~/Projects/In-house-leave-management
-          git checkout main
-          git pull
-          /home/paul/.local/bin/poetry install
-          /home/paul/.local/bin/poetry run ./manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
