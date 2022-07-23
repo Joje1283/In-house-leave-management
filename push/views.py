@@ -1,6 +1,7 @@
 import json
 from datetime import timedelta
 
+import sentry_sdk
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
@@ -17,4 +18,5 @@ def debug(request):
         return JsonResponse(data={"result": True})
     except Exception as e:
         print(e)
+        sentry_sdk.capture_exception(e)
     return JsonResponse(data={"result": False})
