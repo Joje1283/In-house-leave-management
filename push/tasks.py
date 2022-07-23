@@ -31,4 +31,4 @@ def send_welcome_email(username: str):
 
 @shared_task
 def send_email_push(from_address, to_address_list, subject, content):
-    return send_mail(subject, content, from_address, to_address_list, fail_silently=False)
+    return send_mail(subject, content, from_address, [to_address_list], fail_silently=False)
