@@ -24,3 +24,4 @@ jobs:
         docker build . --file DockerfileForWorker --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7} --tag ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:latest --build-arg YOUR_ENV=production
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:${GITHUB_SHA::7}
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/leave_push_worker:latest
+# 테스트 배포를 위한 주석
