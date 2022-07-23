@@ -35,4 +35,9 @@ jobs:
         script: |
           kubectl set image deployment/leave-v1 leave=joje1283/leave:${GITHUB_SHA::7}
           kubectl set image deployment/leave-push-worker leave=joje1283/leave_push_worker:${GITHUB_SHA::7}
+          cd ~/Projects/In-house-leave-management
+          git checkout feature/쿠버네티스_적용
+          git pull
+          /home/paul/.local/bin/poetry install
+          /home/paul/.local/bin/poetry run ./manage.py collectstatic --settings=leave_management.settings.collectstatic --no-input
 # 배포 이미지 교체 명령 : kubectl set image {{deployment-name}} {{container-name}}=image-name
