@@ -24,7 +24,8 @@ def push_print(s):
 def send_welcome_email(username: str):
     try:
         member = Member.objects.get(username=username)
-        member.send_welcome_email()
+        result = member.send_welcome_email()
+        print(result)
     except Exception as e:
         sentry_sdk.capture_exception(e)
 

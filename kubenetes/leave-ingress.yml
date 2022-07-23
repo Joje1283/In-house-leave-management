@@ -62,6 +62,10 @@ spec:
               value: "{{ WELCOME_EMAIL_SENDER }}"
             - name: ALLOWED_HOST
               value: "{{ ALLOWED_HOST }}"
+            - name: CELERY_BROKER_URL
+              value: "{{ CELERY_BROKER_URL }}"
+            - name: SENTRY_DSN
+              value: "{{ SENTRY_DSN }}"
 
 ---
 apiVersion: v1
